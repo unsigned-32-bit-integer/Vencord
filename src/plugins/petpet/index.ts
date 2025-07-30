@@ -150,7 +150,7 @@ export default definePlugin({
 
                 const canvas = document.createElement("canvas");
                 canvas.width = canvas.height = resolution;
-                const ctx = canvas.getContext("2d")!;
+                const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
                 UploadManager.clearAll(cmdCtx.channel.id, DraftType.SlashCommand);
 
@@ -167,8 +167,8 @@ export default definePlugin({
                     ctx.drawImage(frames[i], 0, 0, resolution, resolution);
 
                     const { data } = ctx.getImageData(0, 0, resolution, resolution);
-                    const palette = quantize(data, 256);
-                    const index = applyPalette(data, palette);
+                    const palette = quantize(data, 256, { format: "rgba4444" });
+                    const index = applyPalette(data, palette, "rgba4444");
 
                     gif.writeFrame(index, resolution, resolution, {
                         transparent: true,
